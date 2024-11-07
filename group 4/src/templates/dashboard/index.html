@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block header_title %}Accident Alerts{% endblock %}
+
+{% block extra_icons %}
+    <button onclick="toggleSidebar()" class="md:invisible text-center text-white text-2xl m-2">
+        <span id="notification" class="material-symbols-outlined">
+            notifications
+        </span>
+    </button>
+{% endblock %}
+
+{% block content %}
+<div id="sidebar" class="hidden w-full md:flex flex-col h-full md:w-64 bg-slate-500 dark:bg-gray-950 dark:text-white flex-shrink-0">
+    <div class="flex flex-col h-1/2 w-full">
+        <div class="hidden md:flex w-full items-center justify-center flex-shrink-0 p-4">
+            <p class="text-xl font-bold font-mono underline text-gray-100">Alerts</p>
+        </div>
+        <div class="flex flex-col w-full h-full items-center py-4 gap-2 flex-shrink-1 overflow-y-auto">
+            {% for alert in alerts %}
+            <a href="{% url 'index' alert.id %}" class="flex flex-row w-full text-xl font-bold font-mono p-2 px-6 items-center justify-between 
+            {% if alert.priority == "High" %}
+            bg-red-100 dark:bg-red-800 
+            {% elif alert.priority == "Moderate" %}
+            bg-yellow-100 dark:bg-yellow-800 
+            {% endif %}
+            text-gray-800 dark:text-white">
+                <p>{{alert.type}}</p>
+                {% if alert.priority == "High" %}
+                <div class="w-5 h-5 bg-red-500 dark:bg-red-200 rounded-full"></div>
+                {% elif alert.priority == "Moderate" %}
+                <div class="w-5 h-5 bg-yellow-500 dark:bg-yellow-200 rounded-full"></div>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="flex flex-col justify-end w-full h-full gap-2">
+    {% if alertobj %}
+    <div class="p-6 bg-white bg-opacity-30">
+        <h2 class="text-xl font-semibold mb-4" id="modalTitle">Alert Details:</h2>
+        <h2 class="text-lg font-semibold" id="modalTitle">{{alertobj.type}}</h2>
+        <p class="mb-4" id="modalDescription">{{alertobj.description}}</p>
+        <form class="flex flex-row gap-1" id="updateForm" method="post" action="{% url 'index' alertobj.id %}">
+            {% csrf_token %}
+            <input name="update" rows="3" class="border h-full rounded p-2 w-full text-black" placeholder="Add an update..."></textarea>
+            <button type="submit" class="h-full bg-blue-500 text-white rounded p-2">Submit</button>
+        </form>
+        {% if alertobj.updates.exists %}
+        <h3 class="text-lg font-semibold mt-4">Updates:</h3>
+        <ul class="list-disc pl-5 mt-2">
+            {% for update in alertobj.updates.all %}
+                <li class="mb-2">
+                    <span class="font-medium">{{ update.timestamp|date:"g:i a" }}:</span>
+                    <span class="text-white">{{ update.update }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+    </div>
+    {% endif %}
+        
+    <a href="{% url 'logout' %}" class="flex w-full self-end justify-self-end h-20 bg-gray-700 dark:bg-gray-700 items-center justify-center flex-shrink-0">
+        <p class="text-xl font-bold font-mono text-white">Log Out</p>
+    </a>
+    </div>
+    
+</div>                   
+
+<div class="flex overflow-y-auto h-full w-full items-center justify-center bg-gray-50 dark:bg-gray-800">
+    {% if alertobj %}
+    <iframe class="w-full h-full dark:invert dark:hue-rotate-180" src="{{alertobj.place}}"></iframe>
+    {% else %}
+    <iframe class="w-full h-full dark:invert dark:hue-rotate-180" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d38308.200231606665!2d72.97125163303227!3d19.16893293326235!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1728764065426!5m2!1sen!2sin"></iframe> <!-- Map integration -->
+    {% endif %}
+</div>
+<script>
+    function toggleSidebar() {
+        let sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("flex");
+        sidebar.classList.toggle("hidden");
+        let icon = document.getElementById('notification');
+        if (icon.innerText === 'notifications') {
+            icon.innerText = 'close';
+        } else {
+            icon.innerText = 'notifications';
+        }
+    }
+</script>
+{% endblock %}

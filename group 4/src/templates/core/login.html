@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block header_title %}Login{% endblock %}
+
+{% block content %}
+<div class="flex flex-col overflow-y-auto h-full w-full items-center justify-center bg-gray-50 dark:bg-gray-800 p-6 gap-6">
+    <form method="post" enctype="multipart/form-data" class="flex flex-col gap-3 bg-slate-500 text-white dark:text-gray-800 dark:bg-gray-200 h-auto w-full max-w-md mb-36 p-6 gap-5 items-center rounded-2xl">
+        {% csrf_token %} 
+        <p class="font-medium text-xl mb-10">To get started, please <span class="text-blue-300 dark:text-blue-600"><a href="{% url 'login' %}">login</a></span></p>
+        {% if messages %}
+            {% for message in messages %} 
+                <p class="font-bold text-lg text-red-300 dark:text-red-800 mb-4">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <div class="mb-3">
+            <p class="font-serif text-2xl">User ID</p>
+            <input name="id" class="bg-gray-300 text-xl p-2 px-6 rounded-full" placeholder="XXXXXX" autocomplete="useridsentinel" required>    
+        </div>
+        <div class="mb-3">
+            <p class="font-serif text-2xl">Password</p>
+            <input type="password" name="password" class="bg-gray-300 text-xl p-2 px-6 rounded-full" placeholder="Your Password" autocomplete="passwordsentinel" required>
+        </div>
+        <button type="submit" class="bg-gray-900 text-lg p-3 px-8 text-white rounded-full">Submit</button>
+    </form>
+</div>
+{% endblock %}

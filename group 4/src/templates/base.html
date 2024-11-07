@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %} | Sentinel</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    </head>
+    <body class="bg-gray-50 dark:bg-gray-800">
+
+        <div class="flex flex-col h-dvh w-full items-center justify-center">
+            <!-- Main Content -->
+                <div class="flex h-20 w-full bg-slate-700 dark:bg-gray-900 items-center justify-between p-2  md:hidden">
+                    <!-- Sentinel Emergency Brand Name -->
+                    <p class="text-2xl w-64 font-black text-white hidden md:block">Sentinel Emergency</p> <!-- Brand name in the top bar -->
+        
+                    <!-- Page Title -->
+                    <p class="text-2xl font-bold font-mono text-white m-2">{% block header_title %}{% endblock %}</p> <!-- Main headline -->
+                    
+                    {% block extra_icons %}{% endblock %}
+                    <div class="hidden md:invisible"></div>
+                </div>
+        
+                <div class="flex h-full w-full">
+                    {% block content %}{% endblock %}
+                </div>
+                
+        </div>
+
+    </body>
+</html>
